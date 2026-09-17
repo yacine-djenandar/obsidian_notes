@@ -365,7 +365,7 @@ Two attributed reasons: (1) up to 16 bits can go to rare high-norm super-groups 
 
 Plain column sums — this is what a perfect, uncompressed all-reduce would produce:
 
-||c1|c2|c3|c4|c5|c6|c7|c8|
+| |c1|c2|c3|c4|c5|c6|c7|c8|
 |---|---|---|---|---|---|---|---|---|
 |**True sum**|0.06|−0.05|0.06|−0.07|12|−12|6|−6|
 
@@ -630,13 +630,3 @@ $$\large \text{vNMSE} = \frac{0.00786}{360.0146} \approx 2.18 \times 10^{-5}$$
 > Why? SG1's total contribution to $\lVert X \rVert^2$ is just $\large 0.0146$ out of $\large 360.0146$ — about **0.004%**. Wrecking SG1 barely registers. Meanwhile SG2, which holds **99.996%** of the energy, got the bits it needed and came back nearly exact.
 > 
 > That is exactly what $F_j$ was measuring back in §3.1, and exactly why using it to steer bit allocation works: **spend bits where the energy is.** At a modest 3-bit average budget, this vector came through with error five orders of magnitude below its own magnitude.
-
----
-
-## 6. What was simplified here
-
-| Simplified in this note                | The full mechanism                                                                                                                                                                                                                                                  |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Group = super-group (one shared scale) | §3.3 **hierarchical quantization** — per-super-group BF16 max, plus a per-group 8-bit _relative_ scale. Unbiased because the two roundings use independent randomness: $\mathbb{E}[\hat{x}] = \mathbb{E}[\hat{x}'] \cdot \mathbb{E}[\widehat{\text{sf}}] = x$       |
-| Rounding outcomes stated directly      | §2.4/§3.3 **correlated rounding** — shared permutation $u_i = \frac{\pi_i + \gamma_i}{n}$ guarantees exactly one worker's draw lands in each interval $[\frac{k}{n}, \frac{k+1}{n})$, so up/down outcomes spread evenly instead of clustering by chance             |
-| One threshold, chosen arbitrarily      | §3.2 **threshold derivation** — the ratio chain $T_{1,2} = \frac{5}{32} T_{2,4}$, $T_{2,4} = \frac{17}{512} T_{4,8}$, $T_{4,8} = \frac{257}{2^{17}} T_{8,16}$, derived by equalizing per-bit MSE payoff, then anchored by binary search to hit the target $\bar{b}$ |
